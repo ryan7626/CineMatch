@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 
-const Navbar = ({ onHome, onBrowse, onSearch, currentView }) => {
+const Navbar = ({ onSearch }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [tempQuery, setTempQuery] = useState('');
 
@@ -14,9 +15,9 @@ const Navbar = ({ onHome, onBrowse, onSearch, currentView }) => {
 
     return (
         <nav className="flex items-center justify-between py-6 relative z-50">
-            <div
+            <Link
+                to="/"
                 className="flex items-center gap-2 cursor-pointer group"
-                onClick={onHome}
             >
                 <div className="bg-white p-1 rounded group-hover:bg-gray-200 transition-colors">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#030014" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -27,22 +28,22 @@ const Navbar = ({ onHome, onBrowse, onSearch, currentView }) => {
                     </svg>
                 </div>
                 <span className="text-white font-bold text-xl tracking-tight leading-none">CineMatch</span>
-            </div>
+            </Link>
 
             <div className="flex items-center gap-8">
                 <div className="hidden md:flex items-center gap-8">
-                    <button
-                        onClick={onHome}
-                        className={`${currentView === 'home' ? 'text-red-500' : 'text-gray-400'} font-medium transition-colors hover:text-white`}
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) => `${isActive ? 'text-red-500' : 'text-gray-400'} font-medium transition-colors hover:text-white`}
                     >
                         Home
-                    </button>
-                    <button
-                        onClick={onBrowse}
-                        className={`${currentView === 'browse' ? 'text-red-500' : 'text-gray-400'} font-medium transition-colors hover:text-white`}
+                    </NavLink>
+                    <NavLink
+                        to="/browse"
+                        className={({ isActive }) => `${isActive ? 'text-red-500' : 'text-gray-400'} font-medium transition-colors hover:text-white`}
                     >
                         Browse
-                    </button>
+                    </NavLink>
                 </div>
 
                 <div className="relative">

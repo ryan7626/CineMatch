@@ -1,13 +1,14 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import MovieCard from './MovieCard'
 
-const MovieSection = ({ title, movies, onViewAll }) => {
+const MovieSection = ({ title, movies }) => {
     return (
         <section className="py-8">
             <div className="flex items-center justify-between mb-6 px-2">
                 <h2 className="text-2xl font-bold text-white tracking-tight">{title}</h2>
-                <button
-                    onClick={onViewAll}
+                <Link
+                    to="/browse"
                     className="text-red-500 hover:text-red-400 text-sm font-bold flex items-center gap-1 group transition-colors"
                 >
                     View All
@@ -15,7 +16,7 @@ const MovieSection = ({ title, movies, onViewAll }) => {
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
-                </button>
+                </Link>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">

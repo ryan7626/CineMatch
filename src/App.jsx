@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import MovieSection from './components/MovieSection'
@@ -7,8 +8,10 @@ import AllMovies from './components/AllMovies'
 import { fetchTrendingMovies, fetchMoviesByGenre, searchMovies, fetchGenres } from './services/tmdb'
 
 const App = () => {
-  const [view, setView] = useState('home');
-  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [movies, setMovies] = useState({
     trending: [],
@@ -47,7 +50,6 @@ const App = () => {
           };
         });
 
-        // Deduplicate movies for the "All" view
         const getUniqueMovies = (movieArrays) => {
           const combined = movieArrays.flat();
           const seen = new Set();
@@ -76,19 +78,12 @@ const App = () => {
     loadInitialData();
   }, []);
 
-  const showHome = () => {
-    setView('home');
-    setSearchQuery('');
-  };
-
-  const showBrowse = () => {
-    setView('browse');
-    setSearchQuery('');
-  };
-
   const handleSearch = (query) => {
-    setSearchQuery(query);
-    setView('browse');
+    if (query) {
+      navigate(`/browse?q=${encodeURIComponent(query)}`);
+    } else {
+      navigate('/browse');
+    }
   };
 
   if (loading) {
@@ -106,26 +101,26 @@ const App = () => {
     <main className="bg-[#030014] min-h-screen text-white px-5 sm:px-10 md:px-20 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         <Navbar
-          onHome={showHome}
-          onBrowse={showBrowse}
           onSearch={handleSearch}
-          currentView={view}
         />
 
-        {view === 'home' ? (
-          <div className="animate-fadeIn">
-            <Hero movies={movies.trending} />
+        <Routes>
+          <Route path="/" element={
+            <div className="animate-fadeIn">
+              <Hero movies={movies.trending} />
 
-            <div className="flex flex-col gap-12 mt-10">
-              <MovieSection title="Sci-Fi Blockbusters" movies={movies.sciFi} onViewAll={showBrowse} />
-              <MovieSection title="Adrenaline Rush Action" movies={movies.action} onViewAll={showBrowse} />
-              <MovieSection title="Chills & Thrills" movies={movies.horror} onViewAll={showBrowse} />
-              <MovieSection title="Laugh Out Loud" movies={movies.comedy} onViewAll={showBrowse} />
+              <div className="flex flex-col gap-12 mt-10">
+                <MovieSection title="Sci-Fi Blockbusters" movies={movies.sciFi} />
+                <MovieSection title="Adrenaline Rush Action" movies={movies.action} />
+                <MovieSection title="Chills & Thrills" movies={movies.horror} />
+                <MovieSection title="Laugh Out Loud" movies={movies.comedy} />
+              </div>
             </div>
-          </div>
-        ) : (
-          <AllMovies allMovies={movies.all} searchQuery={searchQuery} />
-        )}
+          } />
+          <Route path="/browse" element={
+            <AllMovies allMovies={movies.all} searchQuery={searchQuery} />
+          } />
+        </Routes>
       </div>
 
       <footer className="py-20 text-center text-gray-500 text-sm border-t border-white/5 mt-20">
